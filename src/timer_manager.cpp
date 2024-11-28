@@ -44,9 +44,7 @@ bool timer_manager::add_handler(const std::shared_ptr<timer_handler>& handler) {
     timer_item item;
     item.handler = handler;
     item.next_expired_time = next_expired_time;
-    item.remain_millisecond = UINT64_MAX;
-    item.period = millisecond;
-    item.is_cycled = handler->is_cycled();
+    item.remain_millisecond = 0;
     timer_set::iterator timer = _expired_set.insert(item);
     _handlers.insert(std::pair < std::weak_ptr < timer_handler > , timer_set::iterator > (handler, timer));
     assert(_expired_set.size() == _handlers.size());
@@ -91,14 +89,17 @@ void timer_manager::remove_first() {
         timer_set::iterator iter = _expired_set.begin();
         timer_item temp = *iter;
         _expired_set.erase(iter);
+
         timer_map::iterator it;
         it = _handlers.find(temp.handler);
         if (it != _handlers.end()) {
             _handlers.erase(it);
         }
+
+        const std::shared_ptr<timer_handler> _hander = temp.handler.lock();
         // 如果是循环定时，直接再次加回来
-        if (temp.is_cycled) {
-            add_handler(temp.handler.lock());
+        if (_hander->cycled()) {
+            add_handler(_hander);
         }
         assert(_expired_set.size() == _handlers.size());
     }

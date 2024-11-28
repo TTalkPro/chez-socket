@@ -23,7 +23,6 @@ reactor::~reactor() {
 
 bool reactor::add_handler(const std::shared_ptr<base_handler>& handler) {
     int _events = handler->events();
-    std::cout << "add handler with events: " << _events << std::endl;
     int result = true;
     if(_events & EV_TIMEOUT ){
         result =  _timer_manager->add_handler(std::dynamic_pointer_cast<timer_handler>(handler));
@@ -33,7 +32,7 @@ bool reactor::add_handler(const std::shared_ptr<base_handler>& handler) {
         result =  (result && _engine->add_handler(std::dynamic_pointer_cast<io_handler>(handler)));
     }
     if(result){
-        handler->attach(this);
+        handler->attach_reactor(this);
     }
     return result;
 }

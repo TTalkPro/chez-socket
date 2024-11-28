@@ -10,7 +10,6 @@ bool base_engine::add_handler(const std::shared_ptr<io_handler>& handler) {
         int fd = handler->fd();
         maybe_resize(fd);
         std::weak_ptr<io_handler> _handler = _handlers[fd];
-        std::cout << "the handler: " << _handler.lock() << std::endl;
         if(_handler.lock() == nullptr) {
             // 说明是个全新的handler
             if(can_add(handler)){
@@ -27,6 +26,14 @@ bool base_engine::add_handler(const std::shared_ptr<io_handler>& handler) {
 
     }
     return false;
+}
+
+void base_engine::remove_handler(const std::shared_ptr<io_handler>& handler){
+    if(handler->fd() != -1){
+        int fd = handler->fd();
+        _handlers[fd].reset();
+        _changes.insert(handler);
+    }
 }
 
 void base_engine::maybe_resize(int max_fd) {

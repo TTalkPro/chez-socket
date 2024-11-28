@@ -12,8 +12,6 @@ struct timer_item
     std::weak_ptr<timer_handler> handler;
     uint64_t remain_millisecond;
     uint64_t next_expired_time;
-    uint64_t period;
-    bool is_cycled;
 };
 
 class timer_manager  

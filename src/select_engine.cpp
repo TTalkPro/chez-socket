@@ -42,9 +42,9 @@ void select_engine::poll(uint64_t millisecond) {
     }
     if(millisecond > 0){
         _tv.tv_usec = millisecond * 1000;
-        _res = select(_nfds,&_rfds,&_wfds,NULL,&_tv);
+        _res = select(_nfds + 1,&_rfds,&_wfds,NULL,&_tv);
     }else {
-        _res = select(_nfds,&_rfds,&_wfds,NULL,NULL);
+        _res = select(_nfds + 1,&_rfds,&_wfds,NULL,NULL);
     }
     if(_res > 0 ) {
         for (int i = 0; i <= _nfds; i++) {

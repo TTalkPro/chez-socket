@@ -5,6 +5,5 @@
 #include "base_handler.h"
 
 base_handler::~base_handler() {
-    std::cout << "base_handler events: " << _events << std::endl;
-    detach();
+    detach_reactor();
 }

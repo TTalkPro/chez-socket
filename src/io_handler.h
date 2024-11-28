@@ -12,10 +12,10 @@
 
 class io_handler : virtual public base_handler {
 public:
-    io_handler(): io_handler(-1,0){};
-    io_handler(int socket, int events):base_handler(),_fd(socket){
-        std::cout << "io_handler: "<< events <<std::endl;
-        mark_events(events);
+    explicit io_handler(): io_handler(-1,0){};
+    explicit io_handler(int fd): io_handler(fd,-1){};
+    io_handler(int fd, int events):base_handler(),_fd(fd){
+        watch(events);
     };
     virtual ~io_handler();
     int fd() { return _fd; };

@@ -12,12 +12,25 @@
 class timer_handler: virtual public base_handler{
 public:
     timer_handler(uint64_t millisecond,bool cycled):base_handler(), _millisecond(millisecond),_cycled(cycled){
-        mark_events(EV_TIMEOUT);
+        watch(EV_TIMEOUT);
     };
     explicit timer_handler(uint64_t millisecond): timer_handler(millisecond, false){};
+    explicit timer_handler(): timer_handler(0, false){};
     virtual ~timer_handler();
     uint64_t millisecond(){return _millisecond;};
-    bool is_cycled(){return  _cycled;};
+    bool cycled(){return  _cycled;};
+    bool set_cycled(bool cycled)
+    {
+        bool _old = _cycled;
+        _cycled = cycled;
+        return _old;
+    };
+    uint64_t set_millisecond(uint64_t millisecond)
+    {
+        uint64_t _old = _millisecond;
+        _millisecond = millisecond;
+        return _old;
+    };
 private:
     uint64_t _millisecond;
     bool _cycled;
