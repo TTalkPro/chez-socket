@@ -11,10 +11,9 @@ struct timer_item
 {
     std::weak_ptr<timer_handler> handler;
     uint64_t remain_millisecond;
-
-	bool is_cycled;
-    uint64_t period;
     uint64_t next_expired_time;
+    uint64_t period;
+    bool is_cycled;
 };
 
 class timer_manager  
@@ -22,15 +21,15 @@ class timer_manager
 public:
 	timer_manager();
 	virtual ~timer_manager();
-	bool add_item(std::weak_ptr<timer_handler> handler,  uint64_t millisecond,bool is_cycled = false);
-	void remove_item( std::weak_ptr<timer_handler> handler);
+	bool add_handler(const std::shared_ptr<timer_handler>& handler);
+	void remove_handler(const std::shared_ptr<timer_handler>& handler);
 	bool has_timer_item();
 	void get_latest_item( timer_item& result );
 	void remove_first();
 protected:
 	bool less_than( uint64_t left, uint64_t right );
     uint64_t offset( uint64_t left, uint64_t right );
-	bool is_repeat_item(std::weak_ptr<timer_handler> handler);
+	bool is_repeat_item(const std::shared_ptr<timer_handler>& handler);
 private:
     //使用一个排序的set,把最先超时的handler放在最前面
 	typedef std::multiset<timer_item> timer_set;

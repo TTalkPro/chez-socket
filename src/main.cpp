@@ -1,37 +1,43 @@
+#include <sys/socket.h>
+#include<unistd.h>
 #include <memory>
 #include <iostream>
 #include <chrono>
 #include <thread>
-#include "event.h"
+#include "chez_socket.h"
 #include "timer_handler.h"
-#include "timer_manager.h"
 #include "io_handler.h"
-#include "select_engine.h"
+#include "reactor.h"
 
-class my_timer_handler :public timer_handler {
+
+class my_handler :public timer_handler, public io_handler{
 public:
-    my_timer_handler() = default;
-    ~my_timer_handler(){
-        std::cout << "the my_timer_handler destruct" << std::endl;
+    my_handler(uint64_t millisecond): timer_handler(millisecond), io_handler(STDIN_FILENO,EV_READ){
+
     }
-    void handle_timeout() override {
-        std::cout << "the my_timer_handler handle timeout" << std::endl;
+    ~my_handler(){
+        std::cout << "the my_handler destruct" << std::endl;
     }
+    void handle_events(int events) override {
+        std::cout << "the my_handler handle events: " << events <<  std::endl;
+        if(events & EV_TIMEOUT) {
+            reactor* r = base_handler::attached_reactor();
+            if (r != nullptr) {
+                std::cout << "stop the reactor after: " << millisecond() << "ms" <<  std::endl;
+                r->stop();
+            }
+        }
+        if(events & EV_READ){
+            int n = read(fd(),buffer,1023);
+            buffer[n] = 0;
+            std::string _str = std::string(buffer);
+            std::cout <<"get "<< n << "bytes: " << _str <<std::endl;
+        }
+    }
+private:
+    char buffer[1024];
 };
 
-
-void log_timer_item(const timer_item& item)
-{
-    std::shared_ptr<timer_handler> _handler = item.handler.lock();
-    if(_handler != nullptr) {
-        if(item.remain_millisecond <= 0) {
-            _handler->handle_timeout();
-        }
-        std::cout << "handler is:" << _handler  << " handler reference count: "<< _handler.use_count() << " next_expired_time: " << item.next_expired_time
-                  << " remain_millisecond: " << item.remain_millisecond << std::endl;
-    }
-
-}
 
 
 
@@ -55,9 +61,10 @@ int main() {
 //            _timer_manager->remove_item(_handler1);
 //        }
 //    }
-    std::shared_ptr<io_handler> _handler = std::make_shared<io_handler>(1,EV_TIMEOUT| EV_READ| EV_WRITE);
-    std::shared_ptr<select_engine> _engine = std::make_shared<select_engine>();
-    _engine->add_handler(_handler);
+    std::shared_ptr<reactor> _reactor = std::make_shared<reactor>();
+    std::shared_ptr<timer_handler> _handler1 = std::make_shared<my_handler>(500);
+    _reactor->add_handler(_handler1);
+    _reactor->run();
     std::cout << "end of life" << std::endl;
     return 0;
 }

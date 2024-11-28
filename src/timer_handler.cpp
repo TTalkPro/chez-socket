@@ -6,6 +6,3 @@
 timer_handler::~timer_handler() {
 }
 
-void timer_handler::handle_timeout() {
-    std::cout << "the timer_handler handle timeout" << std::endl;
-}

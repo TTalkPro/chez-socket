@@ -3,11 +3,13 @@ project(czsocket VERSION 1.0.1 DESCRIPTION "socket library for chez scheme")
 set(CMAKE_CXX_STANDARD 17)
 
 add_library(${PROJECT_NAME} SHARED
+        src/base_handler.cpp
         src/timer_handler.cpp
         src/timer_manager.cpp
         src/io_handler.cpp
         src/base_engine.cpp
         src/select_engine.cpp
+        src/reactor.cpp
 )
 
 add_executable(test
