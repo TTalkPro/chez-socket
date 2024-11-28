@@ -12,13 +12,18 @@ class timer_manager;
 class base_engine;
 class base_handler;
 
-class reactor {
+class reactor
+{
 public:
     reactor();
     ~reactor();
-    bool add_handler(const std::shared_ptr<base_handler>& handler);
+    bool add_timer_handler(const std::shared_ptr<base_handler>& handler);
+    bool add_io_handler(const std::shared_ptr<base_handler>& handler, int events);
+    void remove_timer_handler(const std::shared_ptr<base_handler>& handler);
+    void remove_io_handler(const std::shared_ptr<base_handler>& handler, int events);
     void run();
-    void stop() { _loop.exchange(false);};
+    void stop() { _loop.exchange(false); };
+
 private:
     uint64_t run_timer_task();
     std::shared_ptr<base_engine> _engine;

@@ -9,20 +9,21 @@
 #include "base_engine.h"
 class io_handler;
 
-class select_engine: public base_engine {
+class select_engine : public base_engine
+{
 public:
     select_engine() = default;
     ~select_engine();
-    void wakeup()  override;
+    void wakeup() override;
     void poll(uint64_t millisecond) override;
+
 protected:
     bool can_add(const std::shared_ptr<io_handler>& handler) override;
+
 private:
     fd_set _rfds;
     fd_set _wfds;
-    struct timeval  _tv;
-
-
+    struct timeval _tv;
 };
 
 

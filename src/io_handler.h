@@ -10,15 +10,20 @@
 
 #include "base_handler.h"
 
-class io_handler : virtual public base_handler {
+class io_handler : virtual public base_handler
+{
 public:
-    explicit io_handler(): io_handler(-1,0){};
-    explicit io_handler(int fd): io_handler(fd,-1){};
-    io_handler(int fd, int events):base_handler(),_fd(fd){
-        watch(events);
+    explicit io_handler(): io_handler(-1)
+    {
     };
+
+    explicit io_handler(int fd): base_handler(), _fd(fd)
+    {
+    };
+
     virtual ~io_handler();
     int fd() { return _fd; };
+
 private:
     int _fd;
 };

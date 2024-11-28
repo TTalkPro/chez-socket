@@ -13,20 +13,25 @@
 
 class io_handler;
 
-class base_engine {
+class base_engine
+{
 public:
-    base_engine() = default;
+    base_engine(): _max_fd(-1)
+    {
+    };
     virtual ~base_engine() = default;
     bool add_handler(const std::shared_ptr<io_handler>& handler);
     void remove_handler(const std::shared_ptr<io_handler>& handler);
     virtual void wakeup() = 0;
-    virtual void poll(uint64_t millisecond ) = 0;
+    virtual void poll(uint64_t millisecond) = 0;
+
 protected:
     virtual bool can_add(const std::shared_ptr<io_handler>& handler) = 0;
-    typedef std::set<std::shared_ptr<io_handler>,std::owner_less<>> changes_set;
-    changes_set _changes;
+    typedef std::set<std::shared_ptr<io_handler>, std::owner_less<>> pending_set;
+    pending_set _pendings;
     typedef std::vector<std::weak_ptr<io_handler>> handlers_vector;
     handlers_vector _handlers;
+    int _max_fd;
     void maybe_resize(int max_fd);
 };
 

@@ -4,6 +4,6 @@
 
 #include "io_handler.h"
 
-io_handler::~io_handler() noexcept {
-
+io_handler::~io_handler() noexcept
+{
 }

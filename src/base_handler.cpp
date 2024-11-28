@@ -4,6 +4,7 @@
 #include <iostream>
 #include "base_handler.h"
 
-base_handler::~base_handler() {
+base_handler::~base_handler()
+{
     detach_reactor();
 }

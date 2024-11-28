@@ -11,51 +11,85 @@
 #include "reactor.h"
 
 
-reactor::reactor(){
+reactor::reactor()
+{
     _engine = std::make_shared<select_engine>();
     _timer_manager = std::make_shared<timer_manager>();
     _loop.store(true);
 }
-reactor::~reactor() {
+
+reactor::~reactor()
+{
     _engine = nullptr;
     _timer_manager = nullptr;
 }
 
-bool reactor::add_handler(const std::shared_ptr<base_handler>& handler) {
-    int _events = handler->events();
-    int result = true;
-    if(_events & EV_TIMEOUT ){
-        result =  _timer_manager->add_handler(std::dynamic_pointer_cast<timer_handler>(handler));
-    }
-    if((_events & EV_READ)
-        || (_events & EV_WRITE)){
-        result =  (result && _engine->add_handler(std::dynamic_pointer_cast<io_handler>(handler)));
-    }
-    if(result){
+bool reactor::add_timer_handler(const std::shared_ptr<base_handler>& handler)
+{
+    bool ret = _timer_manager->add_handler(std::dynamic_pointer_cast<timer_handler>(handler));
+    if (ret)
+    {
         handler->attach_reactor(this);
+        handler->watch(EV_TIMEOUT);
     }
-    return result;
+    return ret;
 }
-uint64_t reactor::run_timer_task() {
+
+bool reactor::add_io_handler(const std::shared_ptr<base_handler>& handler, int events)
+{
+    int _events = events & EV_IO;
+    int ret = _engine->add_handler(std::dynamic_pointer_cast<io_handler>(handler));
+    if (ret)
+    {
+        handler->attach_reactor(this);
+        handler->watch(_events);
+    }
+    return ret;
+}
+
+void reactor::remove_timer_handler(const std::shared_ptr<base_handler>& handler)
+{
+    _timer_manager->remove_handler(std::dynamic_pointer_cast<timer_handler>(handler));
+    handler->unwatch(EV_TIMEOUT);
+}
+
+void reactor::remove_io_handler(const std::shared_ptr<base_handler>& handler, int events)
+{
+    int _events = events & EV_IO;
+    handler->unwatch(_events);
+    if (handler->pending_events() == 0)
+    {
+        _engine->remove_handler(std::dynamic_pointer_cast<io_handler>(handler));
+    }
+}
+
+uint64_t reactor::run_timer_task()
+{
     timer_item _item;
     _item.remain_millisecond = 0;
-    while (_timer_manager->has_timer_item()) {
+    while (_timer_manager->has_timer_item())
+    {
         _timer_manager->get_latest_item(_item);
-        if (_item.remain_millisecond > 0) {
+        if (_item.remain_millisecond > 0)
+        {
             break;
         }
         _timer_manager->remove_first();
         const std::shared_ptr<timer_handler> _timer_handler = _item.handler.lock();
-        if (_timer_handler == nullptr) {
+        if (_timer_handler == nullptr)
+        {
             continue;
         }
         _timer_handler->handle_events(EV_TIMEOUT);
     }
     return _item.remain_millisecond;
 }
-void reactor::run() {
+
+void reactor::run()
+{
     uint64_t _waiting = 0;
-    while(_loop.load()) {
+    while (_loop.load())
+    {
         _waiting = run_timer_task();
         _engine->poll(_waiting);
         run_timer_task();
