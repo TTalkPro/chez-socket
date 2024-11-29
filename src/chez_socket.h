@@ -12,10 +12,10 @@
 #define EV_CLOSED	0x80
 
 #if defined(__linux__) || \
-defined(__FreeBSD__) || \
-defined(__OpenBSD__) || \
-defined(__DragonFly__) || \
-defined(__NetBSD__)
+    defined(__FreeBSD__) || \
+    defined(__OpenBSD__) || \
+    defined(__DragonFly__) || \
+    defined(__NetBSD__)
 #define fd_t int
 #endif
 

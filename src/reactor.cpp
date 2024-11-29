@@ -8,9 +8,17 @@
 #include "common/io_handler.h"
 #include "common/timer_handler.h"
 #include "common/timer_manager.h"
+
+#if defined(__linux__) || \
+    defined(__FreeBSD__) || \
+    defined(__OpenBSD__) || \
+    defined(__DragonFly__) || \
+    defined(__NetBSD__)
 #include "unix/select_engine.h"
+#endif
 
 #include "reactor.h"
+
 
 
 reactor::reactor()

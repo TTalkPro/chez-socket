@@ -11,11 +11,11 @@ int make_pipe(fd_t fds[2], int read_flags, int write_flags);
 #ifndef UNIX_PLATFORM_H
 #define UNIX_PLATFORM_H
 #if defined(__APPLE__) || \
-defined(__DragonFly__) || \
-defined(__FreeBSD__) || \
-defined(__linux__) || \
-defined(__OpenBSD__) || \
-defined(__NetBSD__)
+    defined(__DragonFly__) || \
+    defined(__FreeBSD__) || \
+    defined(__linux__) || \
+    defined(__OpenBSD__) || \
+    defined(__NetBSD__)
 #define mark_nonblock mark_nonblock_ioctl
 #else
 #define mark_nonblock mark_nonblock_fcntl
