@@ -6,7 +6,7 @@
 #define CHEZ_SOCKET_TIMER_HANDLER_H
 #include <string>
 #include <iostream>
-#include "chez_socket.h"
+#include "../chez_socket.h"
 #include "base_handler.h"
 
 class timer_handler : virtual public base_handler

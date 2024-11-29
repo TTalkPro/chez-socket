@@ -4,7 +4,7 @@
 #include <typeinfo>
 #include "base_engine.h"
 
-#include "chez_socket.h"
+#include "../chez_socket.h"
 #include "io_handler.h"
 
 bool base_engine::add_handler(const std::shared_ptr<io_handler>& handler)
@@ -38,10 +38,6 @@ void base_engine::remove_handler(const std::shared_ptr<io_handler>& handler)
     {
         int fd = handler->fd();
         _handlers[fd].reset();
-        if (fd == _max_fd)
-        {
-            _max_fd = -1;
-        }
     }
 }
 

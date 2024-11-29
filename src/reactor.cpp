@@ -3,11 +3,13 @@
 //
 #include <memory>
 #include "chez_socket.h"
-#include "base_handler.h"
-#include "io_handler.h"
-#include "timer_handler.h"
-#include "select_engine.h"
-#include "timer_manager.h"
+#include "common/base_handler.h"
+#include "common/base_engine.h"
+#include "common/io_handler.h"
+#include "common/timer_handler.h"
+#include "common/timer_manager.h"
+#include "unix/select_engine.h"
+
 #include "reactor.h"
 
 
@@ -61,6 +63,17 @@ void reactor::remove_io_handler(const std::shared_ptr<base_handler>& handler, in
     }
 }
 
+void reactor::wakeup()
+{
+    _engine->wakeup();
+}
+void reactor::wakeup(wakeup_handler *handler, void *data, size_t length)
+{
+    _engine->wakeup(handler, data, length);
+}
+
+
+
 uint64_t reactor::run_timer_task()
 {
     timer_item _item;
@@ -95,3 +108,4 @@ void reactor::run()
         }
     }
 }
+

@@ -5,11 +5,12 @@
 #include <chrono>
 #include <thread>
 #include "chez_socket.h"
-#include "timer_handler.h"
-#include "io_handler.h"
+#include "common/timer_handler.h"
+#include "common/io_handler.h"
+#include "common/wakeup_handler.h"
 #include "reactor.h"
 
-
+std::string str = std::string("Hello World!");
 class my_handler: public timer_handler, public io_handler
 {
 public:
@@ -50,14 +51,38 @@ private:
     uint64_t _millisecond;
 };
 
+class my_wakeup_handler: public wakeup_handler
+{
+public:
+    my_wakeup_handler() = default;
+    ~my_wakeup_handler() = default;
+    void handle_wakeup(const wakeup_msg &msg) override
+    {
+        std::cout << "the my_wakeup_handler handle_wakeup: "  << std::endl;
+        std::string str = std::string((const char*)msg.data,msg.length);
+        std::cout << str << std::endl;
+    }
+};
+void async_call(std::shared_ptr<reactor>& r, std::shared_ptr<wakeup_handler>& handler)
+{
+    std::this_thread::sleep_for(std::chrono::milliseconds(2000));
+    r->wakeup(handler.get(),(void*)str.c_str(),str.length());
+}
+
 
 int main()
 {
+
     std::shared_ptr<reactor> _reactor = std::make_shared<reactor>();
-    std::shared_ptr<base_handler> _handler1 = std::make_shared<my_handler>(3000);
+    std::shared_ptr<base_handler> _handler1 = std::make_shared<my_handler>(50000);
+    std::shared_ptr<wakeup_handler> _handler2 = std::make_shared<my_wakeup_handler>();
+
     _reactor->attach(_handler1);
+    _reactor->attach(_handler2);
     _reactor->add_io_handler(_handler1, EV_READ);
     _reactor->add_timer_handler(_handler1, std::dynamic_pointer_cast<my_handler>(_handler1)->millisecond());
+    std::thread thread1(async_call, std::ref(_reactor), std::ref(_handler2));
+    thread1.detach();
     _reactor->run();
     std::cout << "end of life" << std::endl;
     return 0;

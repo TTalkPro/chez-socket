@@ -6,7 +6,6 @@
 #define CZSOCKET_BASE_HANDLER_H
 
 #include <memory>
-#include <iostream>
 class reactor;
 
 class base_handler : public  std::enable_shared_from_this<base_handler>
@@ -19,7 +18,6 @@ public:
     };
     void watch(int events)
     {
-        std::cout << "watch events: " << events << std::endl;
         _pending_events |= events;
     };
     void unwatch(int events)

@@ -11,6 +11,7 @@
 class timer_manager;
 class base_engine;
 class base_handler;
+class wakeup_handler;
 
 class reactor : public  std::enable_shared_from_this<reactor>
 {
@@ -25,6 +26,8 @@ public:
     bool add_io_handler(const std::shared_ptr<base_handler>& handler, int events);
     void remove_timer_handler(const std::shared_ptr<base_handler>& handler);
     void remove_io_handler(const std::shared_ptr<base_handler>& handler, int events);
+    void wakeup();
+    void wakeup(wakeup_handler* handler, void* data,size_t length);
     void run();
     void stop() { _loop.exchange(false); };
 

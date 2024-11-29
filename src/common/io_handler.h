@@ -5,9 +5,6 @@
 #ifndef CZSOCKET_IO_HANDLER_H
 #define CZSOCKET_IO_HANDLER_H
 
-#include <sys/socket.h>
-#include <iostream>
-
 #include "base_handler.h"
 
 class io_handler : virtual public base_handler

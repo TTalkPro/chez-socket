@@ -5,16 +5,15 @@
 #ifndef CZSOCKET_SELECT_ENGINE_H
 #define CZSOCKET_SELECT_ENGINE_H
 #include <sys/select.h>
-#include <map>
-#include "base_engine.h"
+#include "unix_base_engine.h"
+
 class io_handler;
 
-class select_engine : public base_engine
+class select_engine : public unix_base_engine
 {
 public:
     select_engine() = default;
     ~select_engine();
-    void wakeup() override;
     void poll(uint64_t millisecond) override;
 
 protected:
