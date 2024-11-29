@@ -4,6 +4,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_C_STANDARD 17)
 
 set(SOURCE_FILES
+        src/common/cbuffer.cpp
         src/common/base_handler.cpp
         src/common/timer_handler.cpp
         src/common/io_handler.cpp
