@@ -12,6 +12,8 @@ struct timer_item
     std::weak_ptr<timer_handler> handler;
     uint64_t remain_millisecond;
     uint64_t next_expired_time;
+    uint64_t period;
+    bool is_cycled;
 };
 
 class timer_manager
@@ -19,7 +21,7 @@ class timer_manager
 public:
     timer_manager();
     virtual ~timer_manager();
-    bool add_handler(const std::shared_ptr<timer_handler>& handler);
+    bool add_handler(const std::shared_ptr<timer_handler>& handler,uint64_t millisecond, bool is_cycled = false);
     void remove_handler(const std::shared_ptr<timer_handler>& handler);
     bool has_timer_item();
     void get_latest_item(timer_item& result);

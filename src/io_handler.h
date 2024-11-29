@@ -24,7 +24,7 @@ public:
     virtual ~io_handler();
     int fd() { return _fd; };
     void set_fd(int fd) { _fd = fd; };
-
+    virtual void handle_io(int events) {};
 private:
     int _fd;
 };

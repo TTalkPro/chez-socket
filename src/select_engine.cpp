@@ -30,6 +30,23 @@ void select_engine::poll(uint64_t millisecond)
     FD_ZERO(&_rfds);
     FD_ZERO(&_wfds);
     std::shared_ptr<io_handler> _handler;
+  if (_pendings.size() > 0)
+  {
+    pending_set::iterator it = _pendings.begin();
+    int fd = 0;
+    while (it != _pendings.end())
+    {
+      fd = (*it)->fd();
+      if (fd == -1)
+      {
+        it++;
+        continue;
+      }
+      _handlers[fd] = (*it);
+      it++;
+    }
+    _pendings.clear();
+  }
     for (int i = 0; i < _handlers.capacity(); i++)
     {
         _handler = _handlers[i].lock();
@@ -48,38 +65,7 @@ void select_engine::poll(uint64_t millisecond)
             nfds = i;
         }
     }
-    if (_pendings.size() > 0)
-    {
-        pending_set::iterator it = _pendings.begin();
-        int fd = 0;
-        while (it != _pendings.end())
-        {
-            fd = (*it)->fd();
-            if (fd == -1)
-            {
-                it++;
-                continue;
-            }
-            _handlers[fd] = (*it);
-            (*it)->apply_pending_events();
-            events = (*it)->events();
-            if (events & EV_READ)
-            {
-                FD_SET(fd, &_rfds);
-            }
-            if (events & EV_WRITE)
-            {
-                FD_SET(fd, &_wfds);
-            }
-            if (fd > nfds)
-            {
-                nfds = fd;
-            }
 
-            it++;
-        }
-        _pendings.clear();
-    }
     if (millisecond > 0)
     {
         _tv.tv_usec = millisecond * 1000;
@@ -107,7 +93,7 @@ void select_engine::poll(uint64_t millisecond)
                 _handler = _handlers[i].lock();
                 if (_handler != nullptr)
                 {
-                    _handler->handle_events(events);
+                    _handler->handle_io(events);
                 }
             }
         }

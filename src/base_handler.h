@@ -28,20 +28,17 @@ public:
     };
     virtual ~base_handler();
 
-    virtual void handle_events(int events)
-    {
-    };
     int events() const { return _events; };
     int pending_events() const { return _pending_events; };
     void apply_pending_events() { _events = _pending_events; };
 
 protected:
-    reactor* attached_reactor() const { return _reactor; };
-    void attach_reactor(reactor* r) { _reactor = r; };
+    std::shared_ptr<reactor> attached_reactor() const { return _reactor; };
+    void attach_reactor(const std::shared_ptr<reactor>& r) { _reactor = r; };
     void detach_reactor() { _reactor = nullptr; };
 
 private:
-    reactor* _reactor;
+    std::shared_ptr<reactor> _reactor;
     int _pending_events;
     int _events;
 };

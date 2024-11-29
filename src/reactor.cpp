@@ -24,12 +24,11 @@ reactor::~reactor()
     _timer_manager = nullptr;
 }
 
-bool reactor::add_timer_handler(const std::shared_ptr<base_handler>& handler)
+bool reactor::add_timer_handler(const std::shared_ptr<base_handler>& handler,uint64_t millisecond, bool is_cycled)
 {
-    bool ret = _timer_manager->add_handler(std::dynamic_pointer_cast<timer_handler>(handler));
+    bool ret = _timer_manager->add_handler(std::dynamic_pointer_cast<timer_handler>(handler), millisecond,is_cycled);
     if (ret)
     {
-        handler->attach_reactor(this);
         handler->watch(EV_TIMEOUT);
     }
     return ret;
@@ -41,7 +40,6 @@ bool reactor::add_io_handler(const std::shared_ptr<base_handler>& handler, int e
     int ret = _engine->add_handler(std::dynamic_pointer_cast<io_handler>(handler));
     if (ret)
     {
-        handler->attach_reactor(this);
         handler->watch(_events);
     }
     return ret;
@@ -80,7 +78,7 @@ uint64_t reactor::run_timer_task()
         {
             continue;
         }
-        _timer_handler->handle_events(EV_TIMEOUT);
+        _timer_handler->handle_timer();
     }
     return _item.remain_millisecond;
 }
@@ -91,7 +89,9 @@ void reactor::run()
     while (_loop.load())
     {
         _waiting = run_timer_task();
-        _engine->poll(_waiting);
-        run_timer_task();
+        if(_loop.load())
+        {
+            _engine->poll(_waiting);
+        }
     }
 }

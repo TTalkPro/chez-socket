@@ -31,14 +31,13 @@ timer_manager::~timer_manager()
 {
 }
 
-bool timer_manager::add_handler(const std::shared_ptr<timer_handler>& handler)
+bool timer_manager::add_handler(const std::shared_ptr<timer_handler>& handler,uint64_t millisecond, bool is_cycled)
 {
     //查看是否是已经存在的handler，如果存在同样的handler就直接返回
     if (is_repeat_item(handler))
     {
         return false;
     }
-    uint64_t millisecond = handler->millisecond();
     //强限定，时间不能超高一天
     assert(millisecond < MAX_TIMER_MILLISECOND);
     //获取当前时间的时间戳，转化成毫秒
@@ -48,6 +47,8 @@ bool timer_manager::add_handler(const std::shared_ptr<timer_handler>& handler)
     item.handler = handler;
     item.next_expired_time = next_expired_time;
     item.remain_millisecond = 0;
+    item.period = millisecond;
+    item.is_cycled = is_cycled;
     timer_set::iterator timer = _expired_set.insert(item);
     _handlers.insert(std::pair<std::weak_ptr<timer_handler>, timer_set::iterator>(handler, timer));
     assert(_expired_set.size() == _handlers.size());
@@ -111,11 +112,13 @@ void timer_manager::remove_first()
             _handlers.erase(it);
         }
 
-        const std::shared_ptr<timer_handler> _hander = temp.handler.lock();
         // 如果是循环定时，直接再次加回来
-        if (_hander->cycled())
-        {
-            add_handler(_hander);
+        if (temp.is_cycled)
+        {  const std::shared_ptr<timer_handler> _hander = temp.handler.lock();
+            if (_hander != nullptr)
+            {
+                add_handler(_hander, temp.period, temp.is_cycled);
+            }
         }
         assert(_expired_set.size() == _handlers.size());
     }

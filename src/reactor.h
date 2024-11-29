@@ -12,12 +12,16 @@ class timer_manager;
 class base_engine;
 class base_handler;
 
-class reactor
+class reactor : public  std::enable_shared_from_this<reactor>
 {
 public:
     reactor();
     ~reactor();
-    bool add_timer_handler(const std::shared_ptr<base_handler>& handler);
+    void attach(const std::shared_ptr<base_handler>& handler)
+    {
+        handler->attach_reactor(shared_from_this());
+    };
+    bool add_timer_handler(const std::shared_ptr<base_handler>& handler,uint64_t millisecond, bool is_cycled = false);
     bool add_io_handler(const std::shared_ptr<base_handler>& handler, int events);
     void remove_timer_handler(const std::shared_ptr<base_handler>& handler);
     void remove_io_handler(const std::shared_ptr<base_handler>& handler, int events);
