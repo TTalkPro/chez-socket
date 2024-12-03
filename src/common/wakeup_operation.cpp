@@ -4,7 +4,4 @@
 
 #include "wakeup_operation.h"
 
-void wakeup_operation::handle_wakeup(void *data, size_t size)
-{
-
-}
+void wakeup_operation::handle_wakeup(void *data, size_t size) {}

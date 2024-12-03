@@ -8,7 +8,7 @@ set(SOURCE_FILES
         src/common/timer_handler.cpp
         src/common/io_handler.cpp
         src/common/wakeup_operation.cpp
-        src/common/wakup_handler.cpp
+        src/common/wakeup_handler.cpp
         src/common/timer_manager.cpp
         src/common/io_manager.cpp
         src/reactor.cpp)
@@ -21,7 +21,10 @@ if(UNIX)
             src/unix/socket.cpp
             src/unix/select_io_manager.cpp
             src/unix/tcp_handler.cpp
-            src/unix/unix_wakeup_handler.cpp)
+            src/unix/unix_wakeup_handler.cpp
+            src/common/base_handler.cpp
+            src/common/base_handler.h
+    )
 endif()
 
 add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES})
