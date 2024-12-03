@@ -23,6 +23,7 @@ private:
     fd_set _rfds;
     fd_set _wfds;
     struct timeval _tv;
+    int _wakeup_fd[2];
 };
 
 

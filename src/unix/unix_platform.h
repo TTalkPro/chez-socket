@@ -7,8 +7,8 @@
 int unix_cloexec(int fd,int set);
 int unix_nonblock_ioctl(int fd, int set);
 int unix_nonblock_fcntl(int fd, int set);
-int unix_make_pipe(fd_t fds[2], int read_flags, int write_flags);
-int unix_make_socket(int domain, int type, int protocol);
+int unix_make_pipe(int fds[2], int read_flags, int write_flags);
+int unix_make_socket(int& sockfd, int domain, int type, int protocol);
 
 #ifndef UNIX_PLATFORM_H
 #define UNIX_PLATFORM_H

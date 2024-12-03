@@ -21,7 +21,8 @@ if(UNIX)
             src/unix/pipe.cpp
             src/unix/socket.cpp
             src/unix/unix_base_engine.cpp
-            src/unix/select_engine.cpp)
+            src/unix/select_engine.cpp
+            src/unix/tcp_handler.cpp)
 endif()
 
 add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES})

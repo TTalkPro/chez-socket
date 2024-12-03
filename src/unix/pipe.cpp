@@ -9,8 +9,8 @@
 #include "../chez_socket.h"
 #include "unix_platform.h"
 
-int unix_make_pipe(fd_t fds[2], int read_flags, int write_flags) {
-    fd_t temp[2];
+int unix_make_pipe(int fds[2], int read_flags, int write_flags) {
+    int temp[2];
     int err;
 #if defined(__linux__) || \
 defined(__FreeBSD__) || \

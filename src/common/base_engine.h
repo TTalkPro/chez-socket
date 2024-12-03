@@ -29,8 +29,6 @@ protected:
     pending_set _pendings;
     typedef std::vector<std::weak_ptr<io_handler>> handlers_vector;
     handlers_vector _handlers;
-    fd_t _wakeup_fd[2];
-
 };
 
 
