@@ -8,6 +8,21 @@
 #include "../common/tcp_handler.h"
 
 
+tcp_handler::tcp_handler(int socket)
+{
+    int err = -1;
+    err = unix_cloexec(socket,1);
+    if (err)
+    {
+        throw std::runtime_error("unix cloexec error");
+    }
+    err = unix_nonblock(socket,1);
+    if (err)
+    {
+        throw std::runtime_error("unix nonblock error");
+    }
+    set_fd(socket);
+}
 
 tcp_handler::~tcp_handler()
 {

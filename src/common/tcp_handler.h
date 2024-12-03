@@ -11,7 +11,7 @@
 
 class tcp_handler: public io_handler{
 public:
-    tcp_handler(int domain):io_handler(),_domain(domain){};
+    tcp_handler(int socket);
     tcp_handler() = default;
     ~tcp_handler();
 private:
@@ -19,8 +19,8 @@ private:
 
 private:
     bool _bind = false;
-    int _port = -1;
     int _domain = AF_UNSPEC;
+    struct sockaddr *_addr = nullptr;
 
 };
 
