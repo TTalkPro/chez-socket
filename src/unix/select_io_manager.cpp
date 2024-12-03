@@ -3,14 +3,14 @@
 //
 #include "../chez_socket.h"
 #include "../common/io_handler.h"
-#include "select_engine.h"
+#include "select_io_manager.h"
 
-select_engine::~select_engine() noexcept
+select_io_manager::~select_io_manager() noexcept
 {
 }
 
 
-bool select_engine::can_add(const std::shared_ptr<io_handler> &handler)
+bool select_io_manager::can_add(const std::shared_ptr<io_handler> &handler)
 {
     if (handler->fd() < FD_SETSIZE)
     {
@@ -19,7 +19,7 @@ bool select_engine::can_add(const std::shared_ptr<io_handler> &handler)
     return false;
 }
 
-void select_engine::poll(uint64_t millisecond)
+void select_io_manager::poll(uint64_t millisecond)
 {
     int res = 0;
     int events = 0;
@@ -63,11 +63,6 @@ void select_engine::poll(uint64_t millisecond)
             nfds = i;
         }
     }
-    FD_SET(_wakeup_fd[0], &_rfds);
-    if (_wakeup_fd[0] > nfds) {
-      nfds = _wakeup_fd[0];
-    }
-
     if (millisecond > 0)
     {
         _tv.tv_usec = millisecond * 1000;
@@ -79,17 +74,9 @@ void select_engine::poll(uint64_t millisecond)
     if (res > 0)
     {
 
-        if (FD_ISSET(_wakeup_fd[0], &_rfds))
-        {
-            handle_wakeup();
-        }
         for (int i = 0; i <= nfds; i++)
         {
             events = 0;
-            if (i == _wakeup_fd[0])
-            {
-                continue;
-            }
             if (FD_ISSET(i, &_rfds))
             {
                 events |= EV_READ;

@@ -2,12 +2,12 @@
 // Created by david on 11/28/24.
 //
 #include <typeinfo>
-#include "base_engine.h"
+#include "io_manager.h"
 
 #include "../chez_socket.h"
 #include "io_handler.h"
 
-bool base_engine::add_handler(const std::shared_ptr<io_handler>& handler)
+bool io_manager::add_handler(const std::shared_ptr<io_handler>& handler)
 {
     bool ret = false;
     if (handler->fd() != -1)
@@ -32,7 +32,7 @@ bool base_engine::add_handler(const std::shared_ptr<io_handler>& handler)
     return ret;
 }
 
-void base_engine::remove_handler(const std::shared_ptr<io_handler>& handler)
+void io_manager::remove_handler(const std::shared_ptr<io_handler>& handler)
 {
     if (handler->fd() != -1)
     {
@@ -41,7 +41,7 @@ void base_engine::remove_handler(const std::shared_ptr<io_handler>& handler)
     }
 }
 
-void base_engine::maybe_resize(int max_fd)
+void io_manager::maybe_resize(int max_fd)
 {
     if (_handlers.capacity() < max_fd + 1)
     {

@@ -1,7 +1,8 @@
 #include <cstddef>
+#include <memory>
 #include <string>
 
-class cbuffer {
+class cbuffer: public  std::enable_shared_from_this<cbuffer> {
 
 public:
   cbuffer();

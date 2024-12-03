@@ -10,17 +10,14 @@
 #include <memory>
 #include "../chez_socket.h"
 class io_handler;
-class wakeup_handler;
 
-class base_engine
+class io_manager
 {
 public:
-    base_engine() = default;
-    virtual ~base_engine() = default;
+    io_manager() = default;
+    virtual ~io_manager() = default;
     bool add_handler(const std::shared_ptr<io_handler>& handler);
     void remove_handler(const std::shared_ptr<io_handler>& handler);
-    virtual void wakeup() = 0;
-    virtual void wakeup(wakeup_handler* handler, void* data,size_t length) = 0;
     virtual void poll(uint64_t millisecond) = 0;
 protected:
     void maybe_resize(int max_fd);

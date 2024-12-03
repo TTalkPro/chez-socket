@@ -3,10 +3,9 @@
 //
 #include <memory>
 #include "chez_socket.h"
-#include "common/base_handler.h"
-#include "common/base_engine.h"
-#include "common/io_handler.h"
 #include "common/timer_handler.h"
+#include "common/io_handler.h"
+#include "common/io_manager.h"
 #include "common/timer_manager.h"
 
 #if defined(__linux__) || \
@@ -14,7 +13,7 @@
     defined(__OpenBSD__) || \
     defined(__DragonFly__) || \
     defined(__NetBSD__)
-#include "unix/select_engine.h"
+#include "unix/select_io_manager.h"
 #endif
 
 #include "reactor.h"
@@ -23,7 +22,7 @@
 
 reactor::reactor()
 {
-    _engine = std::make_shared<select_engine>();
+    _engine = std::make_shared<select_io_manager>();
     _timer_manager = std::make_shared<timer_manager>();
     _loop.store(true);
 }
@@ -34,17 +33,13 @@ reactor::~reactor()
     _timer_manager = nullptr;
 }
 
-bool reactor::add_timer_handler(const std::shared_ptr<base_handler>& handler,uint64_t millisecond, bool is_cycled)
+bool reactor::add_timer_handler(const std::shared_ptr<io_handler>& handler,uint64_t millisecond, bool is_cycled)
 {
     bool ret = _timer_manager->add_handler(std::dynamic_pointer_cast<timer_handler>(handler), millisecond,is_cycled);
-    if (ret)
-    {
-        handler->watch(EV_TIMEOUT);
-    }
     return ret;
 }
 
-bool reactor::add_io_handler(const std::shared_ptr<base_handler>& handler, int events)
+bool reactor::add_io_handler(const std::shared_ptr<io_handler>& handler, int events)
 {
     int _events = events & EV_IO;
     int ret = _engine->add_handler(std::dynamic_pointer_cast<io_handler>(handler));
@@ -55,13 +50,13 @@ bool reactor::add_io_handler(const std::shared_ptr<base_handler>& handler, int e
     return ret;
 }
 
-void reactor::remove_timer_handler(const std::shared_ptr<base_handler>& handler)
+void reactor::remove_timer_handler(const std::shared_ptr<io_handler>& handler)
 {
     _timer_manager->remove_handler(std::dynamic_pointer_cast<timer_handler>(handler));
     handler->unwatch(EV_TIMEOUT);
 }
 
-void reactor::remove_io_handler(const std::shared_ptr<base_handler>& handler, int events)
+void reactor::remove_io_handler(const std::shared_ptr<io_handler>& handler, int events)
 {
     int _events = events & EV_IO;
     handler->unwatch(_events);
@@ -70,17 +65,6 @@ void reactor::remove_io_handler(const std::shared_ptr<base_handler>& handler, in
         _engine->remove_handler(std::dynamic_pointer_cast<io_handler>(handler));
     }
 }
-
-void reactor::wakeup()
-{
-    _engine->wakeup();
-}
-void reactor::wakeup(wakeup_handler *handler, void *data, size_t length)
-{
-    _engine->wakeup(handler, data, length);
-}
-
-
 
 uint64_t reactor::run_timer_task()
 {
@@ -99,7 +83,7 @@ uint64_t reactor::run_timer_task()
         {
             continue;
         }
-        _timer_handler->handle_timer();
+        _timer_handler->handle_timeout();
     }
     return _item.remain_millisecond;
 }
