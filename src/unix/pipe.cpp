@@ -9,7 +9,7 @@
 #include "../chez_socket.h"
 #include "unix_platform.h"
 
-int make_pipe(fd_t fds[2], int read_flags, int write_flags) {
+int unix_make_pipe(fd_t fds[2], int read_flags, int write_flags) {
     fd_t temp[2];
     int err;
 #if defined(__linux__) || \
@@ -42,11 +42,11 @@ defined(__NetBSD__)
 #endif
 
     if (read_flags & O_NONBLOCK)
-        if ((err = mark_nonblock(temp[0], 1)))
+        if ((err = unix_nonblock(temp[0], 1)))
             goto fail;
 
     if (write_flags & O_NONBLOCK)
-        if ((err = mark_nonblock(temp[1], 1)))
+        if ((err = unix_nonblock(temp[1], 1)))
             goto fail;
 
     fds[0] = temp[0];

@@ -15,7 +15,7 @@
 
 unix_base_engine::unix_base_engine()
 {
-    if (0 != make_pipe(_wakeup_fd,O_NONBLOCK,O_NONBLOCK))
+    if (0 != unix_make_pipe(_wakeup_fd,O_NONBLOCK,O_NONBLOCK))
     {
         throw std::runtime_error("Failed to create pipe for unix_base_engine");
     }

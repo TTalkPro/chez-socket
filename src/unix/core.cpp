@@ -1,8 +1,10 @@
 #include <cerrno>
 #include <fcntl.h>
 #include <sys/ioctl.h>
+
+
 #include "unix_platform.h"
-int mark_cloexec(int fd,int set) {
+int unix_cloexec(int fd,int set) {
     int r = 0;
     int flags = 0;
     do
@@ -37,7 +39,7 @@ int mark_cloexec(int fd,int set) {
     return 0;
 }
 
-int mark_nonblock_ioctl(int fd, int set)
+int unix_nonblock_ioctl(int fd, int set)
 {
     int r;
 
@@ -55,7 +57,7 @@ int mark_nonblock_ioctl(int fd, int set)
 }
 
 
-int mark_nonblock_fcntl(int fd, int set)
+int unix_nonblock_fcntl(int fd, int set)
 {
     int flags;
     int r;
@@ -96,4 +98,6 @@ int mark_nonblock_fcntl(int fd, int set)
 
     return 0;
 }
+
+
 

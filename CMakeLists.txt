@@ -19,6 +19,7 @@ if(UNIX)
             ${SOURCE_FILES}
             src/unix/core.cpp
             src/unix/pipe.cpp
+            src/unix/socket.cpp
             src/unix/unix_base_engine.cpp
             src/unix/select_engine.cpp)
 endif()
