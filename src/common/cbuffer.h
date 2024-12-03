@@ -26,12 +26,14 @@ public:
   inline char* end() const { return _buffer + _size; }
   // 返回剩余多少空间
   inline size_t remain() const { return _capacity - _size; }
-  inline void reserve(size_t size)
+  inline bool reserve(size_t size)
   {
     if (ensure(size + _size))
     {
       _size  += size;
+      return true;
     }
+    return false;
   }
   size_t add(const void *data, const size_t size);
   size_t add(cbuffer* src,const size_t size);

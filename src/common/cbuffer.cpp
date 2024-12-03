@@ -7,8 +7,8 @@
 #include <iostream>
 #include "cbuffer.h"
 
-#define CBUFFER_BLOCK_SIZE 1024       // 默认为1kb
-#define CBUFFER_BLOCK_MASK 0xFFFFFC00 // 将数据进行round操作，最大4G
+#define CBUFFER_BLOCK_SIZE 4096       // 默认为4kb
+#define CBUFFER_BLOCK_MASK 0xFFFFF000 // 将数据进行round操作，最大4G
 #define CBUFFER_MAX_SIZE 0xFFFFFFFF
 
 cbuffer::cbuffer(): _buffer(NULL), _size(0), _capacity(0)
