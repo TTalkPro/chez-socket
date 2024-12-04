@@ -7,19 +7,20 @@
 #include <sys/socket.h>
 #include "io_handler.h"
 #include "timer_handler.h"
-
-class tcp_handler:public io_handler, public timer_handler
+class cbuffer;
+class tcp_handler:public io_handler
 {
 public:
     tcp_handler(int socket, bool connected = false);
     tcp_handler() = default;
     ~tcp_handler();
     void do_connect(const struct sockaddr* addr, unsigned int addr_len);
+    void do_read();
+    size_t do_write(const char* data, size_t size);
+    size_t read_bytes(const char* buf, size_t size);
+
 protected:
     void handle_events(int events) final;
-    void handle_timeout() override
-    {
-    };
 
 private:
     void make_socket();

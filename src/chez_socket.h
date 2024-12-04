@@ -15,5 +15,8 @@
     defined(__DragonFly__) || defined(__NetBSD__)
 #define fd_t int
 #endif
+extern "C" {
+    typedef  void (*event_callback)(void*, int event);
+}
 
 #endif // CZSOCKET_CHEZ_SOCKET_H

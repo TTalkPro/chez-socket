@@ -28,9 +28,19 @@ bool io_manager::add_handler(const std::shared_ptr<io_handler> &handler) {
 }
 
 void io_manager::remove_handler(const std::shared_ptr<io_handler> &handler) {
-  if (handler->sockfd() != -1) {
-    int fd = handler->sockfd();
-    _handlers[fd].reset();
+  int fd = handler->sockfd();
+  if (fd != -1) {
+    if ( fd < _handlers.size()) {
+      //说明已经在_handlers中了
+      _handlers[fd].reset();
+    }else {
+      // 在pendings的状态下就被移除了
+      // 正常情况下是不应该发生的
+      pending_set::iterator it = _pendings.find(handler);
+      if (it != _pendings.end()) {
+        _pendings.erase(it);
+      }
+    }
   }
 }
 

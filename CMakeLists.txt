@@ -5,6 +5,7 @@ set(CMAKE_C_STANDARD 17)
 
 set(SOURCE_FILES
         src/common/cbuffer.cpp
+        src/common/base_handler.cpp
         src/common/timer_handler.cpp
         src/common/io_handler.cpp
         src/common/wakeup_operation.cpp
@@ -21,10 +22,7 @@ if(UNIX)
             src/unix/socket.cpp
             src/unix/select_io_manager.cpp
             src/unix/tcp_handler.cpp
-            src/unix/unix_wakeup_handler.cpp
-            src/common/base_handler.cpp
-            src/common/base_handler.h
-    )
+            src/unix/unix_wakeup_handler.cpp)
 endif()
 
 add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES})
