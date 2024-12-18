@@ -26,6 +26,7 @@ private:
 
 public:
     ~reactor();
+    void attach_handler(const std::shared_ptr<base_handler>& handler);
     bool add_timer_handler(const std::shared_ptr<base_handler>& handler,
                            uint64_t millisecond, bool is_cycled = false);
     bool add_io_handler(const std::shared_ptr<base_handler>& handler, int events);

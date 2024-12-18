@@ -14,10 +14,10 @@ public:
   virtual ~base_handler() = default;
 
 protected:
-  void attach_to_reactor(const std::shared_ptr<reactor> &r) {
+  void attach(const std::shared_ptr<reactor> &r) {
     _intance = r;
   };
-  std::shared_ptr<reactor> attached_reactor() const {
+  std::shared_ptr<reactor> attached() const {
     return _intance;
   };
 

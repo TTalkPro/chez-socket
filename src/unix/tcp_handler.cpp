@@ -52,8 +52,9 @@ void tcp_handler::do_connect(const struct sockaddr *addr,
   } while (-1 == r && errno == EINTR);
   if (-1 == r && errno != 0) {
     if (errno == EINPROGRESS) {
-      // attached_reactor()->add_io_handler(
-      //     std::dynamic_pointer_cast<io_handler>(shared_from_this()), EV_READ);
+      //TCP链接成功后会进入可写状态
+      attached()->add_io_handler(
+           std::dynamic_pointer_cast<io_handler>(shared_from_this()), EV_WRITE);
     } else {
       throw std::runtime_error("connect error");
     }

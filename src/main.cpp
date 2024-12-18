@@ -24,10 +24,10 @@ public:
   uint64_t millisecond() const { return _millisecond; };
 protected:
   void handle_timeout() override {
-    if (attached_reactor() != nullptr) {
+    if (attached() != nullptr) {
       std::cout << "stop the reactor after: " << _millisecond << "ms" <<
           std::endl;
-      attached_reactor()->stop();
+      attached()->stop();
     }
   }
 
@@ -65,6 +65,7 @@ int main() {
   std::shared_ptr<reactor> _reactor = reactor::instance();
   std::shared_ptr<base_handler> _handler1 = std::make_shared<my_handler>(50000);
   // _reactor->add_io_handler(_handler1, EV_READ);
+  _reactor->attach_handler(_handler1);
   _reactor->add_timer_handler(_handler1, std::dynamic_pointer_cast<my_handler>(_handler1)->millisecond());
   std::thread thread1(async_call, std::ref(_reactor));
   thread1.detach();

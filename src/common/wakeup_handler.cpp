@@ -12,5 +12,5 @@ void wakeup_handler::handle_events(int events) {
   }
 }
 void wakeup_handler::intialize(const std::shared_ptr<reactor>& r) {
-
+  r->attach_handler(shared_from_this());
 }

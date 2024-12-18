@@ -43,6 +43,7 @@ void unix_wakeup_handler::wakeup(wakeup_operation *operation, void *data,
 }
 
 void unix_wakeup_handler::intialize(const std::shared_ptr<reactor> &r) {
+  wakeup_handler::intialize(r);
   r->add_io_handler(std::dynamic_pointer_cast<io_handler>(shared_from_this()),
                     EV_READ);
 }

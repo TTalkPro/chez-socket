@@ -54,7 +54,9 @@ void reactor::initialize() {
     _wakeup_handler->intialize(shared_from_this());
   }
 }
-
+void reactor::attach_handler(const std::shared_ptr<base_handler>& handler) {
+  handler->attach(shared_from_this());
+}
 void reactor::wakeup() {
   if (_wakeup_handler) {
     _wakeup_handler->wakeup();
@@ -73,10 +75,6 @@ bool reactor::add_timer_handler(const std::shared_ptr<base_handler> &handler,
   bool ret = _timer_manager->add_handler(
       std::dynamic_pointer_cast<timer_handler>(handler), millisecond,
       is_cycled);
-  if (ret) {
-    handler->attach_to_reactor(
-        shared_from_this());
-  }
   return ret;
 }
 
@@ -88,7 +86,6 @@ bool reactor::add_io_handler(const std::shared_ptr<base_handler> &handler,
   int ret = _io_manager->add_handler(h);
   if (ret) {
     h->watch(_events);
-    handler->attach_to_reactor(shared_from_this());
   }
   return ret;
 }
