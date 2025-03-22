@@ -5,18 +5,18 @@
 #include <cstring>
 #include <string>
 #include <iostream>
-#include "cbuffer.h"
+#include "CBuffer.h"
 
-#define CBUFFER_BLOCK_SIZE 4096       // 默认为4kb
-#define CBUFFER_BLOCK_MASK 0xFFFFF000 // 将数据进行round操作，最大4G
-#define CBUFFER_MAX_SIZE 0xFFFFFFFF
+#define CBuffer_BLOCK_SIZE 4096       // 默认为4kb
+#define CBuffer_BLOCK_MASK 0xFFFFF000 // 将数据进行round操作，最大4G
+#define CBuffer_MAX_SIZE 0xFFFFFFFF
 
-cbuffer::cbuffer(): _buffer(NULL), _size(0), _capacity(0) {
+CBuffer::CBuffer(): _buffer(NULL), _size(0), _capacity(0) {
 }
 
-cbuffer::cbuffer(cbuffer &&src) noexcept: _buffer(NULL), _size(0),
+CBuffer::CBuffer(CBuffer &&src) noexcept: _buffer(NULL), _size(0),
                                           _capacity(0) {
-  std::cout << "In cbuffer(const cbuffer&&). length = "
+  std::cout << "In CBuffer(const CBuffer&&). length = "
       << src._size << ". Copying resource." << std::endl;
   _buffer = src._buffer;
   _size = src._size;
@@ -29,8 +29,8 @@ cbuffer::cbuffer(cbuffer &&src) noexcept: _buffer(NULL), _size(0),
   src._capacity = 0;
 }
 
-cbuffer::cbuffer(const cbuffer &src): _size(0), _capacity(0), _buffer(NULL) {
-  std::cout << "In cbuffer(const cbuffer&). length = "
+CBuffer::CBuffer(const CBuffer &src): _size(0), _capacity(0), _buffer(NULL) {
+  std::cout << "In CBuffer(const CBuffer&). length = "
       << src._size << ". Copying resource." << std::endl;
 
   if (!ensure(src._size)) {
@@ -39,16 +39,16 @@ cbuffer::cbuffer(const cbuffer &src): _size(0), _capacity(0), _buffer(NULL) {
   memcpy(_buffer, src._buffer, src._size);
 }
 
-cbuffer::~cbuffer() {
-  std::cout << "cbuffer desctruct " << std::endl;
+CBuffer::~CBuffer() {
+  std::cout << "CBuffer desctruct " << std::endl;
   if (_buffer) {
     free(_buffer);
   }
   _buffer = NULL;
 }
 
-cbuffer &cbuffer::operator=(cbuffer &&src) noexcept {
-  std::cout << "In operator=(const cbuffer&&). length = "
+CBuffer &CBuffer::operator=(CBuffer &&src) noexcept {
+  std::cout << "In operator=(const CBuffer&&). length = "
       << src._size << ". Copying resource." << std::endl;
 
   if (this != &src) {
@@ -68,8 +68,8 @@ cbuffer &cbuffer::operator=(cbuffer &&src) noexcept {
   return *this;
 }
 
-cbuffer &cbuffer::operator=(const cbuffer &src) {
-  std::cout << "In operator=(const cbuffer&). length = "
+CBuffer &CBuffer::operator=(const CBuffer &src) {
+  std::cout << "In operator=(const CBuffer&). length = "
       << src._size << ". Copying resource." << std::endl;
   if (this != &src) {
     _size = 0;
@@ -82,7 +82,7 @@ cbuffer &cbuffer::operator=(const cbuffer &src) {
 }
 
 
-size_t cbuffer::add(const void *data, const size_t size) {
+size_t CBuffer::add(const void *data, const size_t size) {
   if (NULL == data) {
     return 0;
   }
@@ -95,7 +95,7 @@ size_t cbuffer::add(const void *data, const size_t size) {
   return size;
 }
 
-size_t cbuffer::insert(const size_t offset,
+size_t CBuffer::insert(const size_t offset,
                        const void *data,
                        const size_t size) {
   if (NULL == data) {
@@ -119,7 +119,7 @@ size_t cbuffer::insert(const size_t offset,
   return size;
 }
 
-void cbuffer::remove(const size_t size) {
+void CBuffer::remove(const size_t size) {
   if (size >= _size) {
     _size = 0;
   } else if (size) {
@@ -128,7 +128,7 @@ void cbuffer::remove(const size_t size) {
   }
 }
 
-size_t cbuffer::add(cbuffer *src, const size_t size) {
+size_t CBuffer::add(CBuffer *src, const size_t size) {
   assert(src && src != this);
   if (NULL == src || this == src) {
     return 0;
@@ -148,7 +148,7 @@ size_t cbuffer::add(cbuffer *src, const size_t size) {
 }
 
 
-size_t cbuffer::add_reversed(const void *data, const size_t size) {
+size_t CBuffer::add_reversed(const void *data, const size_t size) {
   if (NULL == data) {
     return 0;
   }
@@ -161,8 +161,8 @@ size_t cbuffer::add_reversed(const void *data, const size_t size) {
   return size;
 }
 
-bool cbuffer::ensure(const size_t size) {
-  if (size > CBUFFER_MAX_SIZE - _capacity) {
+bool CBuffer::ensure(const size_t size) {
+  if (size > CBuffer_MAX_SIZE - _capacity) {
     return false;
   }
 
@@ -183,7 +183,7 @@ bool cbuffer::ensure(const size_t size) {
 
   size_t capacity = _size + size;
   // 获取最合适的大小
-  capacity = (capacity + CBUFFER_BLOCK_SIZE - 1) & CBUFFER_BLOCK_MASK;
+  capacity = (capacity + CBuffer_BLOCK_SIZE - 1) & CBuffer_BLOCK_MASK;
 
   char *buffer = (char *)realloc(_buffer, capacity);
   if (!buffer) {
@@ -194,7 +194,7 @@ bool cbuffer::ensure(const size_t size) {
   return true;
 }
 
-size_t cbuffer::read(void *data, const size_t size) {
+size_t CBuffer::read(void *data, const size_t size) {
   size_t expect_size = size;
   // 如果buffer数据小于想要的，直接全读取了
   if (size > _size) {
@@ -209,7 +209,7 @@ size_t cbuffer::read(void *data, const size_t size) {
   return expect_size;
 }
 
-bool cbuffer::read_bytes(void *data, const size_t size) {
+bool CBuffer::read_bytes(void *data, const size_t size) {
   if (size > _size) {
     return false;
   }
@@ -217,7 +217,7 @@ bool cbuffer::read_bytes(void *data, const size_t size) {
   return true;
 }
 
-bool cbuffer::read_line(std::string &ref_str, bool peek) {
+bool CBuffer::read_line(std::string &ref_str, bool peek) {
   if (0 == _size) {
     return false;
   }
@@ -245,7 +245,7 @@ bool cbuffer::read_line(std::string &ref_str, bool peek) {
   return true;
 }
 
-void cbuffer::reverse(const void *src, void *dst, size_t size) {
+void CBuffer::reverse(const void *src, void *dst, size_t size) {
   if (size) {
     const char *input = (const char *)src + size;
     char *output = (char *)dst;

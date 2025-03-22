@@ -20,12 +20,12 @@ public:
 protected:
   virtual bool CanAddHandler(const std::shared_ptr<CBaseHandler>& Handler) = 0;
   void MaybeResize(int Size);
-protected:
+  void RemoveFromPendingSet(const std::shared_ptr<CBaseHandler>& Handler);
   //Pending状态是属于强指针，因此要先让Handler执行UnregisterOnEventLoop
   //才能进行删除
   typedef  std::set<std::shared_ptr<CBaseHandler>, std::owner_less<>> PendingSet;
   PendingSet PendingHandlers;
-  typedef std::vector<std::weak_ptr<CBaseHandler>> HandlerVector;
+  typedef std::vector<std::shared_ptr<CBaseHandler>> HandlerVector;
   HandlerVector Handlers;
 };
 

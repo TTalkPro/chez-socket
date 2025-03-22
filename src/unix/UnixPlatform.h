@@ -1,7 +1,9 @@
 //
-// Created by david on 11/29/24.
+// Created by david on 3/22/25.
 //
 
+#ifndef UNIXPLATFORM_H
+#define UNIXPLATFORM_H
 #include "../chez_socket.h"
 
 int unix_cloexec(int fd, int set);
@@ -15,9 +17,10 @@ int unix_ipv6_link_local_scope_id();
 #ifndef UNIX_PLATFORM_H
 #define UNIX_PLATFORM_H
 #if defined(__APPLE__) || defined(__DragonFly__) || defined(__FreeBSD__) ||    \
-    defined(__linux__) || defined(__OpenBSD__) || defined(__NetBSD__)
+defined(__linux__) || defined(__OpenBSD__) || defined(__NetBSD__)
 #define unix_nonblock unix_nonblock_ioctl
 #else
 #define unix_nonblock unix_nonblock_fcntl
 #endif
 #endif // UNIX_PLATFORM_H
+#endif //UNIXPLATFORM_H

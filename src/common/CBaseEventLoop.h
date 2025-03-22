@@ -38,9 +38,7 @@ public:
 
   EVENTLOOP_TYPE GetType() {return Type;};
 protected:
-  //任务队列
-  typedef std::queue<std::shared_ptr<CBaseTask>> TaskQueue;
-  TaskQueue Tasks;
+  uint64_t RunTask();
   std::shared_ptr<CBaseReactor> Reactor = nullptr;
   //目前我们只有一种TimerManager
   CTimerManager TimerManager;

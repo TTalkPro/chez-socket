@@ -2,19 +2,19 @@
 #include <memory>
 #include <string>
 
-class cbuffer : public std::enable_shared_from_this<cbuffer>
+class CBuffer : public std::enable_shared_from_this<CBuffer>
 {
 public:
-    cbuffer();
+    CBuffer();
     // move constructor
-    cbuffer(cbuffer&& src) noexcept;
+    CBuffer(CBuffer&& src) noexcept;
     // copy constructor
-    cbuffer(const cbuffer& src);
-    ~cbuffer();
+    CBuffer(const CBuffer& src);
+    ~CBuffer();
     // move assignment operator
-    cbuffer& operator=(cbuffer&& src) noexcept;
+    CBuffer& operator=(CBuffer&& src) noexcept;
     // copy assignment operator.
-    cbuffer& operator=(const cbuffer& src);
+    CBuffer& operator=(const CBuffer& src);
 
 private:
     char* _buffer; //buffer本体
@@ -40,9 +40,9 @@ public:
     }
 
     size_t add(const void* data, const size_t size);
-    size_t add(cbuffer* src, const size_t size);
+    size_t add(CBuffer* src, const size_t size);
 
-    size_t add(cbuffer* src)
+    size_t add(CBuffer* src)
     {
         return add(src, src->_size);
     }

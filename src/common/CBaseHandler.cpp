@@ -5,7 +5,11 @@
 #include "CBaseHandler.h"
 
 #include "CBaseEventLoop.h"
+
+#include <iostream>
+#include <ostream>
 CBaseHandler::~CBaseHandler() {
+  std::cout << "CBaseHandler::~CBaseHandler()" << std::endl;
   if (Registered) {
     UnregisterOnEventLoop();
   }
@@ -20,6 +24,7 @@ bool CBaseHandler::RegisterOnEventLoop(
     return (EventLoop == this->EventLoop); // 如果在相同的EventLoop代表成功
   }
   Registered = EventLoop->AddHandler(shared_from_this());
+  std::cout << "CBaseHandler::RegisterOnEventLoop(): " << Registered << std::endl;
   if (Registered) {
     this->EventLoop = EventLoop;
   }

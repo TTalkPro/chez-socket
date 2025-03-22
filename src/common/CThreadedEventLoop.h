@@ -20,6 +20,8 @@ public:
 
   bool AddHandler(const std::shared_ptr<CBaseHandler> &Handler) override;
   void RemoveHandler(const std::shared_ptr<CBaseHandler> &Handler) override;
+  void AddTask(const std::shared_ptr<CBaseTask>& Task) override;
+  void RemoveTask(const std::shared_ptr<CBaseTask>& Task) override;
   bool InEventLoop() override;
   void Poll() override;
   // ThreadedEvnetLoop 独有的
@@ -35,11 +37,10 @@ public:
 protected:
   void ThreadEntry();
   void Run();
-
 private:
+  std::mutex TaskMutex;
   std::unique_ptr<std::thread> Thread = nullptr;
   std::atomic<bool> Running = false;
-  std::mutex HandlersMutex;
 };
 
 #endif // CTHREADEDEVENTLOOP_H

@@ -7,7 +7,7 @@
 #include <unistd.h>
 
 #include "../chez_socket.h"
-#include "unix_platform.h"
+#include "UnixPlatform.h"
 
 int unix_make_pipe(int fds[2], int read_flags, int write_flags) {
   int temp[2];

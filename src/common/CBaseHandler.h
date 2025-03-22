@@ -11,6 +11,7 @@ class CBaseEventLoop;
 class CBaseHandler : public std::enable_shared_from_this<CBaseHandler>  {
 public:
   CBaseHandler() = default;
+  CBaseHandler(int RawHandler){this->RawHandler = RawHandler;};
   virtual ~CBaseHandler();
   int GetRawHandler() const {return RawHandler;}
   bool IsRegistered() const {return  Registered;};

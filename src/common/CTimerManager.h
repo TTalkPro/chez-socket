@@ -8,10 +8,10 @@
 #include <memory>
 #include <set>
 
-class CTimerTask;
+class CBaseTask;
 
 struct TimerItem {
-  std::weak_ptr<CTimerTask> Task;
+  std::shared_ptr<CBaseTask> Task;
   uint64_t RemainMillisecond;
   uint64_t NextExpiredTime;
   uint64_t Period;
@@ -22,9 +22,9 @@ class CTimerManager {
 public:
   CTimerManager() = default;
   ~CTimerManager() = default;
-  bool AddTask(const std::shared_ptr<CTimerTask> &Task, uint64_t Millisecond,
+  bool AddTask(const std::shared_ptr<CBaseTask> &Task, uint64_t Millisecond,
                bool Cycled = false);
-  void RemoveTask(const std::shared_ptr<CTimerTask> &Task);
+  void RemoveTask(const std::shared_ptr<CBaseTask> &Task);
   bool HasTimerItem();
   void GetLatestItem(TimerItem &Result);
   void RemoveFirst();
@@ -36,13 +36,13 @@ protected:
   uint64_t Offset(uint64_t Left, uint64_t Right) {
     return (Left - Right);
   };
-  bool IsRepeatItem(const std::shared_ptr<CTimerTask> &Task);
+  bool IsRepeatItem(const std::shared_ptr<CBaseTask> &Task);
 
 private:
   // 使用一个排序的set,把最先超时的handler放在最前面
   typedef std::multiset<TimerItem> TimerSet;
   TimerSet ExpiredSet;
-  typedef std::map<std::weak_ptr<CTimerTask>,TimerSet::iterator,
+  typedef std::map<std::weak_ptr<CBaseTask>,TimerSet::iterator,
                    std::owner_less<>> TimerMap;
   TimerMap Tasks;
 };

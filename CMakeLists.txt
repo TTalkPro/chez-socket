@@ -4,41 +4,29 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_C_STANDARD 17)
 
 set(SOURCE_FILES
-        src/common/cbuffer.cpp
-        src/common/base_handler.cpp
-        src/common/timer_handler.cpp
-        src/common/io_handler.cpp
-        src/common/wakeup_operation.cpp
-        src/common/wakeup_handler.cpp
-        src/common/timer_manager.cpp
-        src/common/io_manager.cpp
-        src/reactor.cpp)
+        src/common/CBuffer.cpp
+        src/common/CBaseEventLoop.cpp
+        src/common/CBaseEventLoop.h
+        src/common/CBaseHandler.cpp
+        src/common/CBaseHandler.h
+        src/common/CBaseTask.cpp
+        src/common/CBaseTask.h
+        src/common/CBaseReactor.cpp
+        src/common/CBaseReactor.h
+        src/common/CThreadedEventLoop.cpp
+        src/common/CThreadedEventLoop.h
+        src/common/CTimerManager.cpp
+        src/common/CTimerManager.h
+        src/common/CTimerTask.cpp
+        src/common/CTimerTask.h
+)
 
 if(UNIX)
     set(SOURCE_FILES
             ${SOURCE_FILES}
             src/unix/core.cpp
             src/unix/pipe.cpp
-            src/unix/socket.cpp
-            src/unix/select_io_manager.cpp
-            src/unix/tcp_handler.cpp
-            src/unix/unix_wakeup_handler.cpp
-            src/common/CBaseEventLoop.cpp
-            src/common/CBaseEventLoop.h
-            src/unix/CEventSelect.cpp
-            src/unix/CEventSelect.h
-            src/common/CBaseHandler.cpp
-            src/common/CBaseHandler.h
-            src/common/CBaseTask.cpp
-            src/common/CBaseTask.h
-            src/common/CBaseReactor.cpp
-            src/common/CBaseReactor.h
-            src/common/CThreadedEventLoop.cpp
-            src/common/CThreadedEventLoop.h
-            src/common/CTimerManager.cpp
-            src/common/CTimerManager.h
-            src/common/CTimerTask.cpp
-            src/common/CTimerTask.h)
+            src/unix/UnixPlatform.h)
 endif()
 
 add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES})
