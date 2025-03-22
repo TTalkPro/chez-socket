@@ -2,10 +2,10 @@
 // Created by david on 3/22/25.
 //
 
-#include "CHandlerBase.h"
+#include "CBaseHandler.h"
 
-#include "CEventLoopBase.h"
-CHandlerBase::~CHandlerBase() {
+#include "CBaseEventLoop.h"
+CBaseHandler::~CBaseHandler() {
   if (Registered) {
     UnregisterOnEventLoop();
   }
@@ -14,8 +14,8 @@ CHandlerBase::~CHandlerBase() {
   }
 }
 
-bool CHandlerBase::RegisterOnEventLoop(
-    const std::shared_ptr<CEventLoopBase> &EventLoop) {
+bool CBaseHandler::RegisterOnEventLoop(
+    const std::shared_ptr<CBaseEventLoop> &EventLoop) {
   if (Registered) {
     return (EventLoop == this->EventLoop); // 如果在相同的EventLoop代表成功
   }
@@ -26,7 +26,7 @@ bool CHandlerBase::RegisterOnEventLoop(
   return Registered;
 }
 
-void CHandlerBase::UnregisterOnEventLoop() {
+void CBaseHandler::UnregisterOnEventLoop() {
   if (!Registered) {
     return;
   }

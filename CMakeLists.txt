@@ -23,14 +23,22 @@ if(UNIX)
             src/unix/select_io_manager.cpp
             src/unix/tcp_handler.cpp
             src/unix/unix_wakeup_handler.cpp
-            src/common/CEventLoopBase.cpp
-            src/common/CEventLoopBase.h
+            src/common/CBaseEventLoop.cpp
+            src/common/CBaseEventLoop.h
             src/unix/CEventSelect.cpp
             src/unix/CEventSelect.h
-            src/common/CHandlerBase.cpp
-            src/common/CHandlerBase.h
-            src/common/CTaskBase.cpp
-            src/common/CTaskBase.h)
+            src/common/CBaseHandler.cpp
+            src/common/CBaseHandler.h
+            src/common/CBaseTask.cpp
+            src/common/CBaseTask.h
+            src/common/CBaseReactor.cpp
+            src/common/CBaseReactor.h
+            src/common/CThreadedEventLoop.cpp
+            src/common/CThreadedEventLoop.h
+            src/common/CTimerManager.cpp
+            src/common/CTimerManager.h
+            src/common/CTimerTask.cpp
+            src/common/CTimerTask.h)
 endif()
 
 add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES})

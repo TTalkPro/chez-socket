@@ -4,9 +4,9 @@
 
 #ifndef CEVENTSELECT_H
 #define CEVENTSELECT_H
-#include "../common/CEventLoopBase.h"
+#include "../common/CBaseEventLoop.h"
 
-class CEventSelect : public CEventLoopBase {
+class CEventSelect : public CBaseEventLoop {
 
 };
 
