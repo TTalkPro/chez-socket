@@ -22,7 +22,15 @@ if(UNIX)
             src/unix/socket.cpp
             src/unix/select_io_manager.cpp
             src/unix/tcp_handler.cpp
-            src/unix/unix_wakeup_handler.cpp)
+            src/unix/unix_wakeup_handler.cpp
+            src/common/CEventLoopBase.cpp
+            src/common/CEventLoopBase.h
+            src/unix/CEventSelect.cpp
+            src/unix/CEventSelect.h
+            src/common/CHandlerBase.cpp
+            src/common/CHandlerBase.h
+            src/common/CTaskBase.cpp
+            src/common/CTaskBase.h)
 endif()
 
 add_library(${PROJECT_NAME} SHARED ${SOURCE_FILES})
