@@ -2,33 +2,31 @@
 // Created by david on 3/22/25.
 //
 
-#ifndef BASECREACTOR_H
-#define BASECREACTOR_H
+#ifndef CBASE_REACTOR_H
+#define CBASE_REACTOR_H
+#include <iostream>
 #include <memory>
-#include <set>
-#include <vector>
 
-class CBaseHandler;
+class CBaseEvent;
+class CEventLoop;
 
 class CBaseReactor {
+  friend class CEventLoop;
 public:
   CBaseReactor() = default;
-  virtual ~CBaseReactor() = default;
-  bool AddHandler(const std::shared_ptr<CBaseHandler>& Handler);
-  void RemoveHandler(const std::shared_ptr<CBaseHandler>& Handler);
-  virtual void Poll(uint64_t millisecond) = 0;
+  virtual ~CBaseReactor() {
+    std::cout << "CBaseReactor::~CBaseReactor()" << std::endl;
+  };
+  virtual bool AddEvent(const std::shared_ptr<CBaseEvent>& Event,int Events) = 0 ;
+  virtual bool RemoveEvent(const std::shared_ptr<CBaseEvent>& Event,int Events) = 0;
+  virtual void Poll(uint64_t Millisecond) = 0;
+  const std::weak_ptr<CEventLoop>& GetEventLoop() const {return EventLoop;};
 protected:
-  virtual bool CanAddHandler(const std::shared_ptr<CBaseHandler>& Handler) = 0;
-  void MaybeResize(int Size);
-  void RemoveFromPendingSet(const std::shared_ptr<CBaseHandler>& Handler);
-  //Pending状态是属于强指针，因此要先让Handler执行UnregisterOnEventLoop
-  //才能进行删除
-  typedef  std::set<std::shared_ptr<CBaseHandler>, std::owner_less<>> PendingSet;
-  PendingSet PendingHandlers;
-  typedef std::vector<std::shared_ptr<CBaseHandler>> HandlerVector;
-  HandlerVector Handlers;
+  void Attach(const std::shared_ptr<CEventLoop>& EventLoop);
+private:
+  std::weak_ptr<CEventLoop> EventLoop;
 };
 
 
 
-#endif //BASECREACTOR_H
+#endif //CBASE_REACTOR_H

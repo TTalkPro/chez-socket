@@ -6,7 +6,7 @@
 #include <iostream>
 #include <unistd.h>
 
-#include "../chez_socket.h"
+#include "../LispAsync.h"
 #include "UnixPlatform.h"
 
 int unix_make_pipe(int fds[2], int read_flags, int write_flags) {

@@ -3,3 +3,6 @@
 //
 
 #include "CBaseTask.h"
+class DummyTimerTask : public CBaseTask {
+  void RunTask(int Events) override {}
+};

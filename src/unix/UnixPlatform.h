@@ -4,7 +4,7 @@
 
 #ifndef UNIXPLATFORM_H
 #define UNIXPLATFORM_H
-#include "../chez_socket.h"
+#include "../LispAsync.h"
 
 int unix_cloexec(int fd, int set);
 int unix_nonblock_ioctl(int fd, int set);
