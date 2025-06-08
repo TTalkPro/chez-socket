@@ -34,9 +34,12 @@ public:
   void Prepare();
   void Poll();
   void Wakeup ();
+  void Register(std::shared_ptr<CBaseEvent> Event);
+  void Unregister(std::shared_ptr<CBaseEvent> Event);
 protected:
   uint64_t RunTasks();
 private:
+
   std::thread::id ThreadId = std::this_thread::get_id();
   std::mutex TaskMutex;
   //我们可以人为一般任务是时间戳为0的Task
@@ -44,6 +47,9 @@ private:
 
   std::shared_ptr<CBaseReactor> Reactor = nullptr;
   std::shared_ptr<CWakeupEvent> WakeupEvent = nullptr;
+
+  typedef std::set<std::shared_ptr<CBaseEvent>> EventsSet;
+  EventsSet Events;
 
 };
 

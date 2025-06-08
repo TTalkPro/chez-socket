@@ -107,7 +107,6 @@ bool CEventLoop::AddEvent(
     int Events)  {
   if (InEventLoop()) {
     if (nullptr != Reactor) {
-      Event->Attach(shared_from_this());
      return Reactor->AddEvent(Event,Events);
     }
     return false;
@@ -171,6 +170,22 @@ void CEventLoop::Wakeup() {
     WakeupEvent->Wakeup();
   }
 }
+
+void CEventLoop::Register(std::shared_ptr<CBaseEvent> Event) {
+  EventsSet::iterator it = Events.find(Event);
+  if (it != Events.end()) {
+    return;
+  }
+  Events.insert(Event);
+}
+
+void CEventLoop::Unregister(std::shared_ptr<CBaseEvent> Event) {
+  EventsSet::iterator it = Events.find(Event);
+  if (it != Events.end()) {
+    Events.erase(it);
+  }
+}
+
 
 uint64_t CEventLoop::RunTasks() {
   std::lock_guard<std::mutex> lock(TaskMutex);

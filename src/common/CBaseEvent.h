@@ -10,7 +10,6 @@
 class CEventLoop;
 
 class CBaseEvent : public std::enable_shared_from_this<CBaseEvent>  {
-  friend class CEventLoop;
 public:
   CBaseEvent() = default;
   CBaseEvent(FDType Handle){this->Handle = Handle;};
@@ -28,8 +27,9 @@ public:
   const std::weak_ptr<CEventLoop>& GetEventLoop() const {return EventLoop;}
 
   virtual void HandleEvent(int Events) {};
-protected:
   void Attach(const std::shared_ptr<CEventLoop>& EventLoop);
+  void Detach();
+
 private:
   std::weak_ptr<CEventLoop> EventLoop;
   FDType Handle = -1;
